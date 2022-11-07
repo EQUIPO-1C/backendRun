@@ -6,6 +6,20 @@ services:
     ports:
       - "3306:3306"
     container_name: sia_auth_db
+
+  siam_asignatura_inscritas_ms:
+    image: siam_aignatura_inscritas_devimg 
+    build: ../microservices/SIAM_asignaturas_inscritas_ms
+    ports:
+      - "8088:80"
+    container_name: siam_asignatura_inscritas_ms
+  
+  siam_ingresar_calificaciones_ms:
+    image: siam_ingresar_calificaciones_devimg
+    build: ../microservices/SIAM_ingresar_calificaciones_ms
+    ports:
+      - "8008:80"
+    container_name: siam_ingresar_calificaciones_ms
   
   siam_auth_ms:
     image: auth_ms_devimg
@@ -51,17 +65,18 @@ services:
     image: "cassandra"
     container_name: cassandra
 
-  asignatura_ms:
+  siamasignaturams:
+    image: asignatura_ms_devimg
     build:
       context: ../microservices/SIAM_asignatura_ms
       args:
         JAR_FILE: /spring-data-cassandra-docker-1.0.0.jar
-    restart: always
+    # restart: always
     ports:
       - "8082:8082"
     depends_on:
       - cassandra
-    container_name: asignatura_ms 
+    container_name: siamasignaturams 
 
   ag:
     image: siam_ag_devimg
@@ -71,9 +86,11 @@ services:
     depends_on:
       - horario_ms
       - procins_ms
-      - asignatura_ms
+      - siam_asignatura_inscritas_ms
       - hacademica_ms
-      # - auth_ms
+      - siam_auth_ms
+      - siamasignaturams
+      - siam_ingresar_calificaciones_ms
     container_name: siam_ag
 
   proxy: 
@@ -84,5 +101,7 @@ services:
     depends_on:
       - ag
     container_name: siam_proxy
+  
+  
   
   
