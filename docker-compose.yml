@@ -1,0 +1,88 @@
+version: '3.5'
+services:
+  auth_db:
+    image: sia_auth_db_devimg
+    build: ../microservices/SIAM_Databases_DB/SIAM_Auth_DB
+    ports:
+      - "3306:3306"
+    container_name: sia_auth_db
+  
+  siam_auth_ms:
+    image: auth_ms_devimg
+    build: ../microservices/SIAM_Auth_MS
+    ports:
+      - "3020:3020"
+    depends_on:
+      - auth_db
+    environment:
+      - DATABASE_URL=mysql://root:swarchiiauthdb-123@sia_auth_db:3306/auth-db
+      - JWT_SECRET=aSIs6frZ6gLrkwtJDxl8o7vNy987tMHl
+      - PORT=3020
+    container_name: siam_auth_ms
+  
+  hacademica_ms:
+    image: h_academica_ms_devimg 
+    build: ../microservices/SIAM_h_academica_ms
+    ports:
+      - "3000:3000"
+    container_name: siam_h_academica_ms
+
+  horario_ms:
+    image: schedule_ms_devimg
+    build: ../microservices/SIAM_horario_ms
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_USER=procIns_ms_C 
+      - DB_PSWD=arquisoft2022
+    container_name: schedule_ms
+
+  procins_ms:
+    image: procins_devimg 
+    build: ../microservices/SIAM_procIns_ms
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_USER=procIns_ms_C 
+      - DB_PSWD=arquisoft2022
+    container_name: procins_ms 
+
+  cassandra:
+    image: "cassandra"
+    container_name: cassandra
+
+  asignatura_ms:
+    build:
+      context: ../microservices/SIAM_asignatura_ms
+      args:
+        JAR_FILE: /spring-data-cassandra-docker-1.0.0.jar
+    restart: always
+    ports:
+      - "8082:8082"
+    depends_on:
+      - cassandra
+    container_name: asignatura_ms 
+
+  ag:
+    image: siam_ag_devimg
+    build: ../SIAM_AG_MS
+    ports:
+      - "5000:5000"
+    depends_on:
+      - horario_ms
+      - procins_ms
+      - asignatura_ms
+      - hacademica_ms
+      # - auth_ms
+    container_name: siam_ag
+
+  proxy: 
+    image: siam_proxy_devimg
+    build: ../SIAM_proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - ag
+    container_name: siam_proxy
+  
+  
