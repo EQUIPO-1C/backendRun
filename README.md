@@ -12,6 +12,6 @@ Para correr todos los microservicios y el backend en general usar la siguiente e
     ├─ backendRun/
     │  ├─ docker-compose.yml
 
-Despues de eso posicionarnos sobre la carpeta backendRun y usar el comando
+Correr el siguiente comando
 
-    docker compose up 
+    docker compose up -d 
