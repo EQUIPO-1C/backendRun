@@ -172,5 +172,13 @@ services:
       - "8085:80"
     links:
       - swarch2022ii-ldap
-
+      
+  siam_interface:
+    image: siam_interface_devimg
+    build: ../SIAM_interface
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ag
+    container_name: siam_interface
   
