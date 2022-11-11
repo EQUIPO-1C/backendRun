@@ -1,11 +1,12 @@
 version: '3.5'
 services:
-  auth_db:
-    image: sia_auth_db_devimg
-    build: ../microservices/SIAM_Databases_DB/SIAM_Auth_DB
-    ports:
-      - "3306:3306"
-    container_name: sia_auth_db
+  #ESTA BASE LA COMENTAMOS YA QUE ESTA DESPLEGADA ONLINE
+  # auth_db:
+  #   image: sia_auth_db_devimg
+  #   build: ../microservices/SIAM_Databases_DB/SIAM_Auth_DB
+  #   ports:
+  #     - "3306:3306"
+  #   container_name: sia_auth_db
 
   siam_asignatura_inscritas_ms:
     image: siam_aignatura_inscritas_devimg 
@@ -29,7 +30,7 @@ services:
     depends_on:
       - auth_db
     environment:
-      - DATABASE_URL=mysql://root:swarchiiauthdb-123@sia_auth_db:3306/auth-db
+      - DATABASE_URL=mysql://root:a2MCOkkDEyjNytTTlMDM@containers-us-west-102.railway.app:6182/railway
       - JWT_SECRET=aSIs6frZ6gLrkwtJDxl8o7vNy987tMHl
       - PORT=3020
     container_name: siam_auth_ms
