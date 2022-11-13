@@ -27,8 +27,6 @@ services:
     build: ../microservices/SIAM_Auth_MS
     ports:
       - "3020:3020"
-    depends_on:
-      - auth_db
     environment:
       - DATABASE_URL=mysql://root:a2MCOkkDEyjNytTTlMDM@containers-us-west-102.railway.app:6182/railway
       - JWT_SECRET=aSIs6frZ6gLrkwtJDxl8o7vNy987tMHl
