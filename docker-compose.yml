@@ -81,7 +81,7 @@ services:
     image: siam_ag_devimg
     build: ../SIAM_AG_MS
     ports:
-      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - horario_ms
       - procins_ms
