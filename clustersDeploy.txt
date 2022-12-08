@@ -1,0 +1,11 @@
+gcloud container clusters create clustersiampub --cluster-dns=clouddns --cluster-dns-scope=vpc --cluster-version=1.23.12-gke.100 --cluster-dns-domain=clusterpubdns --zone=europe-north1-a --network redsiam --subnetwork subredpub
+
+
+
+gcloud container clusters update clustersiampriv --cluster-dns=clouddns --cluster-dns-scope=vpc --cluster-dns-domain=clusterprivdns --zone=northamerica-northeast1-a
+ --network redsiam --subnetwork subredpriv
+gcloud container clusters upgrade clustersiampriv --cluster-version=1.23.12-gke.1600 --node-pool=default-pool --zone=northamerica-northeast1-a
+
+
+
+

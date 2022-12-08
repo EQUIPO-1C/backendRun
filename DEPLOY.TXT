@@ -1,0 +1,90 @@
+gcloud container clusters create siamclusterbackup --region=southamerica-east1-a
+
+docker tag siam_asignatura_ms-app us-central1-docker.pkg.dev/siam-368902/devimgsiam/asignaturams
+kubectl create deployment asignaturamsdeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/asignaturams
+kubectl scale deployment asignaturamsdeploy --replicas 4
+kubectl expose deployment asignaturamsdeploy --type=LoadBalancer --port 8082
+kubectl expose deployment asignaturamsdeploy --port 8082
+
+docker push us-central1-docker.pkg.dev/siam-368902/devimgsiam/authmsdep
+kubectl create deployment authmsdeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/authmsdep
+kubectl scale deployment authmsdeploy --replicas 2
+kubectl expose deployment authmsdeploy --type=LoadBalancer --port 3020
+kubectl expose deployment authmsdeploy --port 3020
+gcloud container clusters get-credentials clustersiampriv --zone northamerica-northeast1-a --project siam-368902  && kubectl exec authmsdeploy-7c7c6c85d4-4vmfg -c authmsdep --stdin --tty  -- /bin/sh
+
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamag
+kubectl create deployment agdeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamag --replicas 2
+kubectl expose deployment agdeploy --type=LoadBalancer --port 5001
+
+docker tag siam_proxy_devimg us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxy:1.0
+docker push us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxy:1.0
+kubectl create deployment proxydeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxy --replicas 2
+kubectl create deployment proxydeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxywa
+kubectl expose deployment proxydeploy --type=LoadBalancer --port 80
+
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamwa
+kubectl create deployment siamwadeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamwa --replicas 2
+kubectl expose deployment siamwadeploy --type=LoadBalancer --port 8005
+kubectl expose deployment siamwadeploy --cluster-ip=None --port 8005 --target-port=8000
+
+
+us-central1-docker.pkg.dev/siam-368902/devimgsiam/horario_ms
+kubectl expose deployment horariomsdeploy --type=LoadBalancer --port 4000
+kubectl expose deployment horariomsdeploy --port 4000
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/h_academica .
+kubectl create deployment hacademicadeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/h_academica
+kubectl expose deployment hacademicadeploy --type=LoadBalancer --port 3000
+kubectl expose deployment hacademicadeploy --port 3000
+gcloud container clusters get-credentials clustersiampriv --zone northamerica-northeast1-a --project siam-368902  && kubectl exec hacademicadeploy-57cd77d9d-qw9kw -c h-academica-qmt9j --stdin --tty  -- /bin/bash
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/asiginscritas .
+kubectl create deployment asiginscrideploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/asiginscritas
+kubectl expose deployment asiginscrideploy --type=LoadBalancer --port 80
+kubectl expose deployment asiginscrideploy --port 80
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/ingcalif .
+kubectl create deployment ingcalifdeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/ingcalif
+kubectl expose deployment ingcalifdeploy --type=LoadBalancer --port 80
+kubectl expose deployment ingcalifdeploy --port 80
+
+docker tag osixia/phpldapadmin us-central1-docker.pkg.dev/siam-368902/devimgsiam/ldapadminimg
+docker tag osixia/openldap:1.1.8 us-central1-docker.pkg.dev/siam-368902/devimgsiam/ldapimg
+kubectl expose deployment phpldapadmin --type=LoadBalancer --port 80
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamldapms .
+kubectl create deployment ldapmsdeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamldapms
+kubectl expose deployment ldapmsdeploy --type=LoadBalancer --port 5020
+
+kubectl expose deployment pruebaservicio --type=LoadBalancer --port 15672
+
+docker build -t us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxywa .
+kubectl create deployment proxywadeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siamproxywa
+kubectl expose deployment proxywadeploy --type=LoadBalancer --port 80
+kubectl expose deployment proxywadeploy --port 80 --target-port=8005 --type=LoadBalancer
+
+docker push us-central1-docker.pkg.dev/siam-368902/devimgsiam/siaminterface
+kubectl create deployment siaminterfacedeploy --image=us-central1-docker.pkg.dev/siam-368902/devimgsiam/siaminterface
+kubectl expose deployment siaminterfacedeploy --type=LoadBalancer --port 8000
+
+MICROS
+kubectl scale deployment asiginscrideploy --replicas 4
+kubectl scale deployment asignaturamsdeploy --replicas 4
+kubectl scale deployment authmsdeploy --replicas 4
+kubectl scale deployment hacademicadeploy --replicas 4
+kubectl scale deployment horariomsdeploy --replicas 4
+kubectl scale deployment ingcalifdeploy --replicas 4
+kubectl scale deployment ldapmsdeploy --replicas 4
+kubectl scale deployment siamwadeploy --replicas 4
+
+API
+kubectl scale deployment agdeploy --replicas 4
+
+PROXYS
+kubectl scale deployment proxyagdeploy --replicas 3
+kubectl scale deployment proxywadeploy --replicas 3
+
+
